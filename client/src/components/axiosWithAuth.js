@@ -2,7 +2,7 @@ import axios from "axios";
 
 // - [ ] Build a `axiosWithAuth` module to create an instance of axios with the authentication header
 
-export default function axiosWithAuth() {
+const axiosWidthAuth = (() => {
   const token = window.localStorage.getItem("token");
   return axios.create({
     baseURL: "http://localhost:5000",
@@ -10,4 +10,6 @@ export default function axiosWithAuth() {
       Authorization: `${token}`
     }
   });
-}
+})();
+
+export default axiosWidthAuth;
