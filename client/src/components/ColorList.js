@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axiosWidthAuth from "./axiosWithAuth";
 
 const initialColor = {
   color: "",
   code: { hex: "" }
 };
-
+// - [ ] In `ColorList.js`, complete the `saveEdit` and `deleteColor` functions to make AJAX requests to the API to edit/delete data
 const ColorList = ({ colors, updateColors }) => {
   console.log(colors);
   const [editing, setEditing] = useState(false);
@@ -18,9 +18,16 @@ const ColorList = ({ colors, updateColors }) => {
 
   const saveEdit = e => {
     e.preventDefault();
+    console.log(colorToEdit);
     // Make a put request to save your updated color
     // think about where will you get the id from...
     // where is is saved right now?
+    axiosWidthAuth
+      .put(`/api/colors/${colorToEdit.id}`, colorToEdit)
+      .then(({ data }) => {
+        updateColors(prev => prev.map(c => (c.id === data.id ? data : c)));
+      })
+      .catch(console.error);
   };
 
   const deleteColor = color => {
@@ -34,12 +41,14 @@ const ColorList = ({ colors, updateColors }) => {
         {colors.map(color => (
           <li key={color.color} onClick={() => editColor(color)}>
             <span>
-              <span className="delete" onClick={e => {
-                    e.stopPropagation();
-                    deleteColor(color)
-                  }
-                }>
-                  x
+              <span
+                className="delete"
+                onClick={e => {
+                  e.stopPropagation();
+                  deleteColor(color);
+                }}
+              >
+                x
               </span>{" "}
               {color.color}
             </span>
