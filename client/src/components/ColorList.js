@@ -32,6 +32,12 @@ const ColorList = ({ colors, updateColors }) => {
 
   const deleteColor = color => {
     // make a delete request to delete this color
+    axiosWidthAuth
+      .delete(`/api/colors/${color.id}`)
+      .then(({ data }) => {
+        updateColors(prev => prev.filter(c => c.id !== data));
+      })
+      .catch(console.error);
   };
 
   return (
