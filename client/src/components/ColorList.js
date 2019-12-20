@@ -40,6 +40,24 @@ const ColorList = ({ colors, updateColors }) => {
       .catch(console.error);
   };
 
+  const addColor = e => {
+    e.preventDefault();
+    console.log(colorToEdit);
+    // Make a put request to save your updated color
+    // think about where will you get the id from...
+    // where is is saved right now?
+    axiosWidthAuth
+      .post(`/api/colors`, colorToEdit)
+      .then(({ data }) => {
+        updateColors(prev => data);
+        resetColor();
+      })
+      .catch(console.error);
+  };
+
+  const resetColor = () => {
+    setColorToEdit(initialColor);
+  };
   return (
     <div className="colors-wrap">
       <p>colors</p>
@@ -91,12 +109,53 @@ const ColorList = ({ colors, updateColors }) => {
           </label>
           <div className="button-row">
             <button type="submit">save</button>
-            <button onClick={() => setEditing(false)}>cancel</button>
+            <button
+              type="button"
+              onClick={() => {
+                setEditing(false);
+                resetColor();
+              }}
+            >
+              cancel
+            </button>
           </div>
         </form>
       )}
-      <div className="spacer" />
-      {/* stretch - build another form here to add a color */}
+      <div className="spacer">
+        {/* stretch - build another form here to add a color */}
+        {!editing && (
+          <form onSubmit={addColor}>
+            <legend>add color</legend>
+            <label>
+              color name:
+              <input
+                onChange={e =>
+                  setColorToEdit({ ...colorToEdit, color: e.target.value })
+                }
+                value={colorToEdit.color}
+              />
+            </label>
+            <label>
+              hex code:
+              <input
+                onChange={e =>
+                  setColorToEdit({
+                    ...colorToEdit,
+                    code: { hex: e.target.value }
+                  })
+                }
+                value={colorToEdit.code.hex}
+              />
+            </label>
+            <div className="button-row">
+              <button type="submit">save</button>
+              <button type="button" onClick={resetColor}>
+                cancel
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
     </div>
   );
 };
